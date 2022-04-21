@@ -1,0 +1,50 @@
+
+
+
+<nav class="navbar navbar-expand-lg navbar-dark  fixed-top"
+{% if not request.user.is_student %}
+	style="background-color: #600377  ;"
+{% else %}
+	style="background-color: #1358b3  ;"
+{% endif %}>
+
+	<div class="container">
+		<a class="navbar-brand text-warning"></a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+	  <div class="collapse navbar-collapse" id="navbarScroll">
+		  {% if not request.user.is_student %}
+			<ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll h6" style="--bs-scroll-height: 100px;">
+				<li class="nav-item">
+				<a class="nav-link active" style=" color: #ece930;" aria-current="page" href="{% url 'reports-view' %}">Quiz report</a>
+				</li>
+				<li class="nav-item">
+				<a class="nav-link active" style=" color: #ece930;" href="{% url 'add-quiz' %}">Add quiz</a>
+				</li>
+				
+				<li class="nav-item">
+				<a class="nav-link active" style=" color: #ece930;" href="{% url 'my-quizes-view' %}">Manage Quiz</a>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link active" style=" color: #ece930;" href="{% url 'quiz-view' %}">Check view Quizes</a>
+				</li>
+			</ul>
+		  {% else %}
+			<ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll h6" style="--bs-scroll-height: 100px;">
+				<li class="nav-item">
+					<a class="nav-link active" style=" color: #fffb00;" aria-current="page" href="{% url 'quiz-view' %}">All quizes</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link active" style=" color: #fffb00;" href="{% url 'quiz-reports-view' %}">Quiz report</a>
+				</li>
+			</ul>
+		  {% endif %}
+		
+		<div class="d-flex">
+			<a href="{% url 'logout-view' %}" class="btn btn-warning btn-sm">Log out</a>
+		</div>
+	  </div>
+	</div>
+  </nav>

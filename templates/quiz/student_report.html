@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  My Reports
+{% endblock title %}
+
+{% block navbar %}
+  {% include "navbar.html" %}
+{% endblock navbar %}
+
+
+{% block content %}
+
+	<div class="row justify-content-center" style="margin-top: 95px;">
+
+		<table class="table table-bordered">
+			<thead>
+				<tr class="alert-primary">
+					<th>Student</th>
+					<th>Student email</th>
+					<th>Id college</th>
+					<th>Quiz name</th>
+					<th>Question</th>
+					<th>Your answer</th>
+					<th>Correct answer</th>
+					<th>Answer condidtion</th>
+					<th>Answered on</th>
+					<th>Question score</th>
+					<th>Total</th>
+				</tr>
+			</thead>
+
+			<tbody>
+
+				{% for r in reports %}
+				  <tr>
+					<td>{{r.user}}</td>
+					<td>{{r.user.email}}</td>
+					<td>{{r.user.id_college}}</td>
+					<td style="background-color: bisque;">{{r.quiz.name}}</td>
+					<td>{{r.question}}</td>
+					<td>{{r.student_answer}}</td>
+					<td>{{r.correct_answer}}</td>
+					{% if r.is_true_answered == 'Incorrect theory answer' %}
+						<td style="background-color: rgb(196, 100, 100); color: #ffff; font-weight: 500;">{{r.is_true_answered}}</td>
+					{% else %}
+						<td style="background-color: rgb(107, 214, 186); color: #ffff; font-weight: 500;">{{r.is_true_answered}}</td>
+					{% endif %}
+					
+					<td>{{r.on_date}}</td>
+					<td style="background-color: bisque;">{{r.question_score}}</td>
+					<td></td>
+				  </tr>
+				{% endfor %}
+
+				{% for t in total %}
+					<tr class="alert-primary">
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>{{t.total}}%</td>
+					</tr>
+				{% endfor %}
+
+
+			</tbody>
+
+		</table>
+
+	</div>
+  
+{% endblock content %}

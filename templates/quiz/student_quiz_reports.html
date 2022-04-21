@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  My Reports
+{% endblock title %}
+
+{% block navbar %}
+  {% include "navbar.html" %}
+{% endblock navbar %}
+
+{% block content %}
+
+<div class="row justify-content-center" style="margin-top: 95px;">
+	
+	{% for data in my_quizes %}
+		<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-5">
+			<div class="card" style="width: 18rem;">
+				<img src="{% static 'img/quiz-img.png' %}" class="card-img-top" alt="...">
+				<div class="card-body" style="margin-left: 17px;">
+
+					<h5 class="card-title">{{ data.name }}</h5><hr>
+					<p class="card-text">{{ data.topic }}</p><hr>
+
+					<a href="{% url 'report-view' data.id %}" class="btn btn-info btn-sm card-link">View report</a>
+
+				</div>
+
+			</div>
+		</div>
+	{% empty %}
+			<h1 class="text-muted" style="text-align: center; margin-top: 20%;">No Reports yet............!</h1>
+
+	{% endfor %}
+  
+{% endblock content %}

@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Quiz's
+{% endblock title %}
+
+{% block navbar %}
+  {% include "navbar.html" %}
+{% endblock navbar %}
+
+{% block content %}
+    <div class="row justify-content-center" style="margin-top: 95px;">
+        {% for data in all_quizes %}
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-5">
+                <div class="card" style="width: 18rem;">
+                    <img src="{% static 'img/ready.jpg' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ data.name }}</h5>
+                        <p class="card-text text-muted">{{ data.topic }}</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><b class="c_left"></b><div class="time-interval h6" id_val="{{ data.id }}"></div></li>
+                        <li class="list-group-item"><p>Questions  :</p> <span class="text-primary">{{ data.number_of_chosen_questions | add:data.number_of_theory_questions }}</span></li>
+                        <li class="list-group-item"><p>Time of quiz         :</p> <span class="text-primary">{{ data.time }} minutes</span></li>
+                        <li class="list-group-item"><p>Score to pass        :</p> <span class="text-primary">{{ data.required_score_to_pass }}</span> %</li>
+                        <li class="list-group-item"><p>Difficulty           :</p> <span class="text-primary">{{ data.difficulty }}</span></li>
+                    </ul>
+                    <div class="card-body">
+                        
+                        <button name="name_add"  id_val="{{ data.id }}" type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Enter quiz code</button>
+                        <a target="_blank" href="{% url 'questions' data.id %}" quiz-id="{{ data.id }}" id="start_quiz" class="btn btn-outline-primary card-link quiz-code" hidden></a>
+                        
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <h1 class="text-muted" style="text-align: center; margin-top: 20%;">No Quizes added............!</h1>
+        {% endfor %}
+
+    </div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <div id="error_code">
+
+          </div>
+
+        <form method="post">{% csrf_token %}
+            <input id="quiz_id" name="quiz_id" type="number" hidden>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="floatingInput" name="quiz_code" required>
+                <label for="floatingInput">Quiz verified code</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="check_close" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="check_code" class="btn btn-primary btn-sm">Go</button>
+            </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    const loc = location.origin
+
+	let names = document.getElementsByName('name_add')
+
+	for(let i=0; i<names.length; i++){
+		names[i].addEventListener('click', () => {
+			document.getElementById('quiz_id').value = names[i].attributes['id_val'].value
+			$.ajax({
+				method: 'GET',
+				url: `${loc}/instructor/response_id/`,
+				data: {id: names[i].attributes['id_val'].value},
+				success: function(response){
+					$('#exampleModalLabel').html(`
+						${response.name}
+					`)
+
+				}
+			})
+		})
+		
+	}
+
+    $('#check_code').click(function(){
+        let quiz_code_id = document.getElementsByClassName('quiz-code')
+
+        for(let i=0; i<quiz_code_id.length; i++){
+            if( quiz_code_id[i].attributes['quiz-id'].value == $('#quiz_id').val() & $('#floatingInput').val() != '' ){
+                $.ajax({
+                    url: `${loc}/quiz/response/code/`,
+                    data: {
+                        method: 'GET',
+                        quiz_code: $('#floatingInput').val(),
+                        quiz_id: $('#quiz_id').val()
+                    },
+                    success: function(response){
+
+                        if(response.flier){
+                            $('#error_code').html(`
+                                <div class="alert alert-danger" role="alert">
+                                    <strong>${response['flier']}</strong>
+                                </div>
+                            `)
+                        }else if(response.true){
+                            quiz_code_id[i].click()
+                            document.getElementById('check_close').click()
+                            $('#error_code').html(`
+                                
+                            `)
+                            $('#floatingInput').val('')
+                        }
+                    }
+                })
+            }
+        }
+        
+    })
+
+
+
+
+
+
+
+    let loc_host = `ws://${window.location.host}`
+    
+    let socket = new WebSocket(`${loc_host}/ws/test_cons/`)
+
+
+
+    socket.onmessage = (e) => {
+        const time_interval = document.getElementsByClassName('time-interval')
+        const c_left = document.getElementsByClassName('c_left')
+
+        const data = JSON.parse(e['data'])
+
+        let keys = Object.keys(data['quiz_start'])
+
+        keys.map((k, i) =>{
+            for(let x=0; x<time_interval.length; x++){
+
+                if(time_interval[x].getAttribute("id_val") == k){
+
+                    if(data['quiz_start'][k]['is_start'] == false){
+
+                        time_interval[x].classList.add('text-success')
+                        c_left[x].classList.add('text-success')
+                        c_left[x].innerHTML = 'Started in '
+                        names[x].setAttribute('hidden', '')
+                        time_interval[x].innerHTML = `${data['quiz_start'][k]['time_now']}`
+
+                    }else if(data['quiz_start'][k]['is_start'] == true){
+
+                        time_interval[x].classList.add('text-danger')
+                        c_left[x].classList.add('text-danger')
+                        c_left[x].innerHTML = 'Ended in'
+                        names[x].removeAttribute('hidden')
+                        time_interval[x].innerHTML = `${data['quiz_start'][k]['time_now']}`
+
+                    }else if(data['quiz_start'][k]['is_start'] == 'ended'){
+                            
+                        time_interval[x].classList.add('text-danger')
+                        c_left[x].classList.add('text-danger')
+                        c_left[x].innerHTML = 'Ended'
+                        names[x].setAttribute('hidden', '')
+                        time_interval[x].innerHTML = `Quiz ended`
+                        
+                    }
+
+                }
+                    
+            }
+            
+        })
+
+        
+    }
+
+
+
+    /*function t_interval(){
+        let d = new Date()
+        const months = [
+                        "01", "02", "03", "04", "05", "06",
+                        "07", "08", "09", "10", "11", "12"
+                   ];
+        const time_interval = document.getElementsByClassName('time-interval')
+        let day;
+        if(d.getDate() < 10){
+            day = `0${d.getDate().toString()}`
+        }else{
+            day = d.getDate().toString()
+        }
+
+        for(let i=0; i<time_interval.length; i++){
+            time_interval[i].innerHTML = `${day}/${months[d.getMonth()]}/${d.getFullYear().toString()}, ${d.getHours().toString()}:${d.getMinutes().toString()}:${d.getSeconds().toString()}`
+        }
+    }
+    t_interval()
+    setInterval(t_interval, 1000)*/
+
+
+</script>
+
+{% endblock content %}

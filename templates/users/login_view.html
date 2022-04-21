@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Login here
+{% endblock title %}
+
+{% block content %}
+
+    <div class="col-5 offset-3" style="margin-top: 200px">
+        <figure class="text-center">
+            <blockquote class="blockquote">
+              <b>Login here.</b>
+            </blockquote>
+            <figcaption class="blockquote-footer">
+              Smart <cite title="Source Title">online quiz</cite>
+            </figcaption>
+          </figure>
+        {% if auth_error %}
+            <div class="alert alert-danger" role="alert">
+                <strong>{{ auth_error|escape }}</strong>
+            </div>
+        {% endif %}
+        <form action="" method="post" class="form_signin">
+            {% csrf_token %}
+            <label for="username">Username*</label>
+            <input type="text" name="username" id="username" required>
+
+            <label for="password" class="mt-3">Password*</label>
+            <input type="password" name="password" id="password" required>
+
+            <button type="submit" class="btn btn-dark">Sign in</button>
+        </form>
+    </div>
+
+{% endblock content %}

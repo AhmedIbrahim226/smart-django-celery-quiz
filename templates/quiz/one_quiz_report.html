@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+		
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+		<title>{{q_name}} | Report</title>
+	</head>
+	<body>
+
+		<nav class="navbar  is-spaced" role="navigation" aria-label="main navigation" style="background-color: #600377  ;">
+			<div class="navbar-brand">
+		  
+			  <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+			  </a>
+			</div>
+		  
+			<div id="navbarBasicExample" class="navbar-menu container">
+			  <div class="navbar-start">
+				<a class="" style=" color: #ece930; padding: 5px; font-weight: 500;"  href="{% url 'reports-view' %}">
+					Quiz report
+				</a>
+		  
+				<a class="" style=" color: #ece930; padding: 5px; font-weight: 500;" href="{% url 'add-quiz' %}">
+					Add quiz
+				</a>
+
+				<a class="" style=" color: #ece930; padding: 5px; font-weight: 500;" href="{% url 'my-quizes-view' %}">
+					Manage Quiz
+				</a>
+
+				<a class="" style=" color: #ece930; padding: 5px; font-weight: 500;" href="{% url 'quiz-view' %}">
+					Check view Quizes
+				</a>
+				
+			  </div>
+			  
+			  <div class="navbar-end">
+				<div class="navbar-item">
+				
+				  <div class="buttons">
+					<a class="button is-warning" href="{% url 'logout-view' %}">
+					  Log out
+					</a>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		  </nav>
+
+
+		<div class="container box" style="margin-top: 100px;">
+			<div class="columns">
+				<div class="column is-one-third is-offset-4">
+					<input id="search" class="input is-medium" type="text" placeholder="Search.....">
+					{% csrf_token %}
+				</div>
+			</div>
+<table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+	<thead>
+	  <tr>
+		<th>Student</th>
+		<th>Student email</th>
+		<th>Id college</th>
+		<th>Quiz name</th>
+		<th>Question</th>
+		<th>Here answer</th>
+		<th>Correct answer</th>
+		<th>Answer condidtion</th>
+		<th>Answered on</th>
+		<th>Question score</th>
+		<th><abbr title="Total">Total</abbr></th>
+	  </tr>
+	</thead>
+
+	<tbody>
+		{% for k, val in data %}
+
+			{% for d_k in k %}
+				<tr>
+					<td>{{d_k.user}}</td>
+					<td>{{d_k.user.email}}</td>
+					<td>{{d_k.user.id_college}}</td>
+					<td>{{d_k.quiz.name}}</td>
+					<td>{{d_k.question}}</td>
+					<td>{{d_k.student_answer}}</td>
+					<td>{{d_k.correct_answer}}</td>
+					<td>{{d_k.is_true_answered}}</td>
+					<td>{{d_k.on_date}}</td>
+					<td>{{d_k.question_score}}</td>
+					<td>{{d_k.question_score}}</td>
+				</tr>
+
+			{% endfor %}
+			<tr class="is-selected text-black h6">
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="subtitle is-5">{{val.total}}%</td>
+			</tr>
+  
+		{% endfor %}
+	
+	</tbody>
+  </table>
+
+</div>
+
+		<script>
+
+			document.getElementById('search').focus()
+
+			$('#search').change(function(){
+
+				$.ajax({
+					method: 'POST',
+					url: `${window.location.origin}/instructor/report/${window.location.pathname.split('/')[3]}/`,
+					data:{
+						csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+						value: $('#search').val(),
+					},
+					success:function(res){
+						document.open()
+						document.write(res)
+					}
+				})
+			})
+
+		</script>
+	</body>
+</html>
+
+
+
+
+
+
+

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  My Quizes
+{% endblock title %}
+
+{% block navbar %}
+  {% include "navbar.html" %}
+{% endblock navbar %}
+
+{% block content %}
+
+<div class="row justify-content-center" style="margin-top: 95px;">
+	
+	{% for data in my_quizes %}
+		<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-5">
+			<div class="card" style="width: 18rem;">
+				<img src="{% static 'img/quiz-img.png' %}" class="card-img-top" alt="...">
+				<div class="card-body" style="margin-left: 17px;">
+
+					<h5 class="card-title">{{ data.name }}</h5><hr>
+					<p class="card-text">{{ data.topic }}</p><hr>
+
+					<a href="{% url 'report' data.id %}" class="btn btn-info btn-sm card-link">Chack report</a>
+					<a name="name_delete" id_val="{{ data.id }}" class="btn btn-danger card-link btn-sm" data-bs-toggle="modal" href="#delete-quiz" role="button">Delete quiz</a>
+
+				</div>
+
+			</div>
+		</div>
+	{% empty %}
+			<h1 class="text-muted" style="text-align: center; margin-top: 20%;">No Reports yet............!</h1>
+
+	{% endfor %}
+
+
+	<div class="modal fade" id="delete-quiz" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title" id="exampleModalToggleLabel"></h5>
+			  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+
+			<form action="" method="post" id="">
+				{% csrf_token %}
+				<div class="modal-body custom_css" id="custom_in">
+
+					<div class="lead text-muted">
+						If deleted... all data of quiz reports from students and you will lost..!
+					</div>
+					
+
+					<input type="number" id="quiz_id" hidden name="quiz_id">
+				</div>
+
+				<div class="modal-footer" id="custom_footer">
+					<button class="btn btn-danger btn-sm">Delete</button>
+				</div>
+			</form>
+
+		  </div>
+		</div>
+	  </div>
+
+
+
+	  <script>
+
+
+		const loc = location.origin
+
+		let names = document.getElementsByName('name_delete')
+
+		for(let i=0; i<names.length; i++){
+			names[i].addEventListener('click', () => {
+				document.getElementById('quiz_id').value = names[i].attributes['id_val'].value
+				$.ajax({
+					method: 'GET',
+					url: `${loc}/instructor/response_id/`,
+					data: {id: names[i].attributes['id_val'].value},
+					success: function(response){
+						$('#exampleModalToggleLabel').html(`
+							Are you sure delete:  ${response.name}
+						`)
+
+					}
+				})
+			})
+			
+		}
+
+
+	  </script>
+{% endblock content %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Sign up
+{% endblock title %}
+
+
+{% block content %}
+
+    <div class="col-5 offset-3" style="margin-top: 200px">
+        {% if success_message %}
+            <div class="alert alert-success" role="alert">
+                <strong>{{ success_message }}</strong>
+            </div>
+        {% endif %}
+        <form class="form_signup" action="" method="post">{% csrf_token %}
+
+            {% for f in form %}
+                <label>{{ f.label }}*</label>
+                {{ f }}
+
+                {% if f.errors %}
+                    {% for error in f.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+            {% endfor %}
+            <button type="submit" class="btn btn-dark">Sign up</button>
+        </form>
+    </div>
+
+
+
+{% endblock content %}

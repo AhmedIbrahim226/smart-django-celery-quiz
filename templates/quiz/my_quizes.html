@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  My Quizes
+{% endblock title %}
+
+{% block navbar %}
+  {% include "navbar.html" %}
+  	
+{% endblock navbar %}
+
+
+{% block content %}
+<button type="button" id="mod2" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" hidden>
+</button>
+  
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="exampleModalLabel">Question Done!</h5>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+			<div class="alert alert-info d-flex align-items-center" role="alert">
+				<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+				<div>
+					  {{success}}
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+{% if success %}
+
+  <script>
+	window.onload = function(){
+		document.getElementById('mod2').click();
+	}
+  </script>
+
+{% endif %}
+
+{% if warning %}
+  
+	{% for key, val in warning %}
+			<div class="alert alert-danger d-flex align-items-center" role="alert">
+				<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+				<div>
+					Number of <b>Quiz {{key}}</b> theory questions must be <b>{{val}}</b> theory questions or more. Please check the number of <b>Quiz {{key}}</b> questions added, or else it will not appear to the students
+				</div>
+			</div>
+
+	{% endfor %}
+
+{% endif %}
+
+{% if warning2 %}
+  
+	{% for key, val in warning2 %}
+			<div class="alert alert-danger d-flex align-items-center" role="alert">
+				<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+				<div>
+					Number of <b>Quiz {{key}}</b> chosen questions must be <b>{{val}}</b> chosen questions or more. Please check the number of <b>Quiz {{key}}</b> questions added, or else it will not appear to the students
+				</div>
+			</div>
+
+	{% endfor %}
+
+{% endif %}
+
+<div class="row justify-content-center" style="margin-top: 95px;">
+	
+	{% for data in my_quizes %}
+		<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-5">
+			<div class="card" style="width: 18rem;">
+				<img src="{% static 'img/quiz-img.png' %}" class="card-img-top" alt="...">
+				<div class="card-body">
+					<h5 class="card-title">{{ data.name }}</h5><hr>
+					<p class="card-text">{{ data.topic }}</p><hr>
+					<p class="card-text">{{ data.start_quiz }}</p><hr>
+					<a href="{% url 'edit-quiz' data.id %}" class=" btn btn-outline-danger card-link">Edit quiz</a>
+					<a href="{% url 'delete-unanswerd-quiz' data.id %}" class=" btn btn-outline-danger card-link">Delete quiz</a>
+				</div>
+				<div class="card-body">
+					<a name="name_add" id_val="{{ data.id }}" class="btn btn-outline-success card-link btn-sm" data-bs-toggle="modal" href="#add-question" role="button">Add Question</a>
+					<a href="{% url 'quiz-question' data.id %}" class=" btn btn-outline-success card-link btn-sm">Edit Question</a>
+
+				</div>
+			</div>
+		</div>
+	{% empty %}
+			<h1 class="text-muted" style="text-align: center; margin-top: 20%;">No Quizes added or check your reports............!</h1>
+
+	{% endfor %}
+
+	<div class="modal fade" id="add-question" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title" id="exampleModalToggleLabel"></h5>
+			  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body custom_css" id="custom_in">
+
+
+				<form class="add_question_form" action="" method="post" id="">
+
+					<select name="question_type" id="question_type">
+						<option value="">--- Question type ---</option>
+						<option value="chosen_q" onclick="chosen_q()">Chosen question</option>
+						<option value="theory_q" onclick="theory_q()">Theory question</option>
+					</select>
+					<input type="number" id="quiz_id" hidden name="quiz_id">
+
+					<div id="form_id"></div>
+
+				</form>
+
+			</div>
+
+			<div class="modal-footer" id="custom_footer">
+			</div>
+
+		  </div>
+		</div>
+	  </div>
+
+</div>
+
+<script>
+
+	const loc = location.origin
+
+	let names = document.getElementsByName('name_add')
+
+	for(let i=0; i<names.length; i++){
+		names[i].addEventListener('click', () => {
+			document.getElementById('quiz_id').value = names[i].attributes['id_val'].value
+			$.ajax({
+				method: 'GET',
+				url: `${loc}/instructor/response_id/`,
+				data: {id: names[i].attributes['id_val'].value},
+				success: function(response){
+					$('#exampleModalToggleLabel').html(`
+						${response.name}
+					`)
+
+				}
+			})
+		})
+		
+	}
+
+
+	const chosen_q = () =>{
+		
+		$('#form_id').html(`
+			{% csrf_token %}
+
+			<label>{{ form.question.label }}*</label>
+			{{ form.question }}
+
+			<label>{{ form.chose1.label }}*</label>
+			{{ form.chose1 }}
+
+			<label>{{ form.chose2.label }}*</label>
+			{{ form.chose2 }}
+
+			<label>{{ form.chose3.label }}*</label>
+			{{ form.chose3 }}
+
+			<label>{{ form.chose4.label }}*</label>
+			{{ form.chose4 }}
+
+			<label>{{ form.correct_chosen.label }}*</label>
+			<p class="text-muted">{{ form.correct_chosen.help_text }}</p>
+			{{ form.correct_chosen }}
+
+			<button type="submit" class="btn btn-outline-success btn-sm">Save</button>
+		`)
+		$('input').prop('required', true)
+
+	}
+
+
+	const theory_q = () =>{
+		$('#form_id').html(`
+			{% csrf_token %}
+
+			<label>{{ form.question.label }}*</label>
+			{{ form.question }}
+
+			<label>{{ form.theory_answer.label }}*</label>
+			<p class="text-muted">{{ form.theory_answer.help_text }}</p>
+
+			{{ form.theory_answer }}
+
+			<button type="submit" class="btn btn-outline-success btn-sm">Save</button>
+		`)
+		$('textarea').prop('required', true)
+
+	}
+
+</script>
+
+{% endblock content %}

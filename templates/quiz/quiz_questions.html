@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Edit
+{% endblock title %}
+
+{% block navbar %}
+  {% include "navbar.html" %}
+{% endblock navbar %}
+
+{% block content %}
+
+	<div class="row" style="margin-top: 100px;">
+		{% for data in questions %}
+
+			<div class="col-4">
+
+				<hr>
+				{% if not data.is_theory_question %}
+
+					<p class="h5">Question*</p>
+					<p class="text-muted">{{ data.question }}</p>
+
+					<p class="h5">Chose1*</p>
+					<p class="text-muted">{{ data.chose1 }}</p>
+
+					<p class="h5">Chose2*</p>
+					<p class="text-muted">{{ data.chose2 }}</p>
+
+					<p class="h5">Chose3*</p>
+					<p class="text-muted">{{ data.chose3 }}</p>
+
+					<p class="h5">Chose4*</p>
+					<p class="text-muted">{{ data.chose4 }}</p>
+
+					<p class="h5">Correct chosen*</p>
+					<p class="text-muted">{{ data.correct_chosen }}</p>
+
+
+					<a href="{% url 'edit-question' quiz_id data.id %}" class="btn btn-warning btn-sm">Edit</a>
+					<a href="{% url 'delete-question' quiz_id data.id %}" class="btn btn-danger btn-sm">Delete</a>
+				
+				{% else %}
+
+					<p class="h5">Question*</p>
+					<p class="text-muted">{{ data.question }}</p>
+
+					<p class="h5">Correct theory answer*</p>
+					<p class="text-muted">{{ data.theory_answer | truncatechars:25 }}</p>
+
+					<a href="{% url 'edit-question' quiz_id data.id %}" class="btn btn-warning btn-sm">Edit</a>
+					<a href="{% url 'delete-question' quiz_id data.id %}" class="btn btn-danger btn-sm">Delete</a>
+				
+				{% endif %}
+				<hr>
+
+
+			</div>
+
+		{% endfor %}
+
+	</div>
+
+	{% if open_form %}
+		<a id="open_modal" class="btn btn-primary" data-bs-toggle="modal" href="#edit-question" role="button" hidden>Open first modal</a>
+		<script>
+			window.onload = function(){
+				document.getElementById('open_modal').click()
+			}
+		</script>
+	  	<div class="modal fade" id="edit-question" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title" id="exampleModalToggleLabel">{{ question_from.question.value }}</h5>
+			  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body" id="modal_body">
+
+			</div>
+
+		  </div>
+		</div>
+	  </div>
+	{% endif %}
+
+	{% if if_theory_q %}
+	  <script>
+		$('#modal_body').html(`
+			<form class="add_question_form" action="" method="post">{% csrf_token %}
+				<label>{{ question_from.question.label }}*</label>
+				{{ question_from.question }}
+
+				<label>{{ question_from.theory_answer.label }}*</label>
+				<p class="text-muted">{{ question_from.theory_answer.help_text }}</p>
+
+				{{ question_from.theory_answer }}
+
+				<button type="submit" class="btn btn-outline-success btn-sm">Apply</button>
+			</form>
+		`)
+		$('textarea').prop('required', true)
+
+	  </script>
+	{% else %}
+		<script>
+			$('#modal_body').html(`
+				<form class="add_question_form" action="" method="post">{% csrf_token %}
+					<label>{{ question_from.question.label }}*</label>
+					{{ question_from.question }}
+		
+					<label>{{ question_from.chose1.label }}*</label>
+					{{ question_from.chose1 }}
+		
+					<label>{{ question_from.chose2.label }}*</label>
+					{{ question_from.chose2 }}
+		
+					<label>{{ question_from.chose3.label }}*</label>
+					{{ question_from.chose3 }}
+		
+					<label>{{ question_from.chose4.label }}*</label>
+					{{ question_from.chose4 }}
+		
+					<label>{{ question_from.correct_chosen.label }}*</label>
+					<p class="text-muted">{{ question_from.correct_chosen.help_text }}</p>
+					{{ question_from.correct_chosen }}
+		
+					<button type="submit" class="btn btn-outline-success btn-sm">Apply</button>
+				</form>
+			`)
+			$('input').prop('required', true)
+
+		</script>
+	{% endif %}
+
+
+	
+
+
+	
+{% endblock content %}
