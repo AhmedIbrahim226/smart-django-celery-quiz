@@ -67,6 +67,7 @@ def question_view(request, *args, **kwargs):
 
         for q in random_chose: random_theory.append(q)
         context['question'] = random_theory
+        
 
     elif theory_question and not chose_question:
 

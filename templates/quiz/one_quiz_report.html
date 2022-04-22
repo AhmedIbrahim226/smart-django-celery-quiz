@@ -76,8 +76,9 @@
 		<th>Correct answer</th>
 		<th>Answer condidtion</th>
 		<th>Answered on</th>
-		<th>Question score</th>
+		<!-- <th>Question score</th> -->
 		<th><abbr title="Total">Total</abbr></th>
+		<th><abbr title="Total">To pass</abbr></th>
 	  </tr>
 	</thead>
 
@@ -96,7 +97,7 @@
 					<td>{{d_k.is_true_answered}}</td>
 					<td>{{d_k.on_date}}</td>
 					<td>{{d_k.question_score}}</td>
-					<td>{{d_k.question_score}}</td>
+					<td></td>
 				</tr>
 
 			{% endfor %}
@@ -110,8 +111,8 @@
 				<td></td>
 				<td></td>
 				<td></td>
-				<td></td>
-				<td class="subtitle is-5">{{val.total}}%</td>
+				<td class="subtitle is-5" style="background-color: rgb(70, 193, 125);">{{val.total}}%</td>
+				<td class="subtitle is-5" style="background-color: #c250ab;">{{val.score_to_pass}}%</td>
 			</tr>
   
 		{% endfor %}

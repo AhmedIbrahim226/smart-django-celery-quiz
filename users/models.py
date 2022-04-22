@@ -44,7 +44,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
 
     is_student = models.BooleanField(default=False)
-    id_college = models.CharField(max_length=50, null=True, blank=True)
+    id_college = models.CharField(max_length=50, null=True, blank=True, unique=True)
 
     objects = UserManager()
 

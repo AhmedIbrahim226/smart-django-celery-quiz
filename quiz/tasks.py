@@ -158,6 +158,7 @@ def check_theory(data, user, quiz_id):
     TotalDegree.objects.create(
         user=user,
         quiz=quiz,
+        score_to_pass=quiz.required_score_to_pass,
         total=score*100/num_of_q
     )
 

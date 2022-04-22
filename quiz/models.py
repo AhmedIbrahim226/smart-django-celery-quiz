@@ -1,3 +1,4 @@
+from statistics import mode
 from django.db import models
 from django.utils import timezone
 import datetime
@@ -98,13 +99,9 @@ class TotalDegree(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
 
+    score_to_pass = models.CharField(max_length=50)
     total = models.FloatField()
 
-
-    @classmethod
-    def get_deg(cls, quiz):
-        my_quiz = Quiz.objects.get(id=quiz)
-        reports = ReportResult.objects.filter(quiz=my_quiz)
 
     def __str__(self):
         return f'{self.quiz}-{self.quiz}'

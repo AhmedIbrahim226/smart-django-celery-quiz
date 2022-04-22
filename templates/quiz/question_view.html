@@ -25,9 +25,9 @@
 {% block content %}
     <div class="container" style="margin: 170px 0 0 0;">
 
-				{% for q in question %}
-					<input name="q_name" type="text" value="{{ q.id }}" hidden is_theory="{{q.is_theory_question}}">
-				<div style="margin: 60px 0 0 0;">
+		{% for q in question %}
+			<input name="q_name" type="text" value="{{ q.id }}" hidden is_theory="{{q.is_theory_question}}">
+			<div style="margin: 60px 0 0 0;">
 
 					<h5 class="mb-3"><span class="text-dark">{{q.question}}</span></h5>
 					{% if not q.chose1 and not q.chose2 and not q.chose3 and not q.chose4 %}
@@ -68,16 +68,15 @@
 						{% endif %}
 					{% endif %}
 
-				</div>
-				{% empty %}
-				<h1>No questions............!</h1>
-
-				{% endfor %}
-      
 			</div>
-      <button id="btn_save" class="btn btn-primary" style="margin-top: 80px; margin-bottom: 80px;">Send</button>
+		{% empty %}
+			<h1>No questions............!</h1>
 
-		</div>
+		{% endfor %}
+		<button id="btn_save" class="btn btn-primary" style="margin-top: 80px; margin-bottom: 80px;">Send</button>
+      
+	</div>
+
 
 
 
@@ -89,7 +88,6 @@
 
 		$('#btn_save').click(function(){
 			const all_questions = document.getElementsByName('q_name')
-			const all_theory = document.getElementsByName('theory')
 
 			const data = {}
 
@@ -107,7 +105,7 @@
 				})
 
 			})
-
+			const all_theory = document.getElementsByName('theory')
 			for(let i=0; i<all_questions.length; i++){
 				if(all_questions[i].getAttribute('is_theory') == 'True'){
 					if(all_theory[i].value == ''){
@@ -126,10 +124,10 @@
 				url: `${loc}/quiz/get-quiz-degree/`,
 				data:{ data_json, 'quiz_id': '{{quiz_id}}'},
 				success: function(response){
+					window.location.replace(`${loc}/quiz/reports/`)
 				}
 			})
 
-			window.location.replace(`${loc}/quiz/reports/`)
 		})
 
 		$(window).blur(function(){

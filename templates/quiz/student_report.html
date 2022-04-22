@@ -17,8 +17,8 @@
 		<table class="table table-bordered">
 			<thead>
 				<tr class="alert-primary">
-					<th>Student</th>
-					<th>Student email</th>
+					<!-- <th>Student</th>
+					<th>Student email</th> -->
 					<th>Id college</th>
 					<th>Quiz name</th>
 					<th>Question</th>
@@ -26,8 +26,8 @@
 					<th>Correct answer</th>
 					<th>Answer condidtion</th>
 					<th>Answered on</th>
-					<th>Question score</th>
 					<th>Total</th>
+					<th>To pass</th>
 				</tr>
 			</thead>
 
@@ -35,14 +35,14 @@
 
 				{% for r in reports %}
 				  <tr>
-					<td>{{r.user}}</td>
-					<td>{{r.user.email}}</td>
+					<!-- <td>{{r.user}}</td>
+					<td>{{r.user.email}}</td> -->
 					<td>{{r.user.id_college}}</td>
 					<td style="background-color: bisque;">{{r.quiz.name}}</td>
 					<td>{{r.question}}</td>
 					<td>{{r.student_answer}}</td>
 					<td>{{r.correct_answer}}</td>
-					{% if r.is_true_answered == 'Incorrect theory answer' %}
+					{% if r.is_true_answered == 'Incorrect theory answer' or r.is_true_answered == 'Incorrect chosen answer' or r.is_true_answered == 'Not answered!!' %}
 						<td style="background-color: rgb(196, 100, 100); color: #ffff; font-weight: 500;">{{r.is_true_answered}}</td>
 					{% else %}
 						<td style="background-color: rgb(107, 214, 186); color: #ffff; font-weight: 500;">{{r.is_true_answered}}</td>
@@ -56,9 +56,8 @@
 
 				{% for t in total %}
 					<tr class="alert-primary">
-						<td></td>
-						<td></td>
-						<td></td>
+						<!-- <td></td>
+						<td></td> -->
 						<td></td>
 						<td></td>
 						<td></td>
@@ -67,9 +66,9 @@
 						<td></td>
 						<td></td>
 						<td>{{t.total}}%</td>
+						<td style="background-color: brown; color: #ffff;">{{t.score_to_pass}}%</td>
 					</tr>
 				{% endfor %}
-
 
 			</tbody>
 
