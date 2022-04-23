@@ -104,4 +104,4 @@ class TotalDegree(models.Model):
 
 
     def __str__(self):
-        return f'{self.quiz}-{self.quiz}'
+        return f'{self.user.id_college}-{self.quiz}'
