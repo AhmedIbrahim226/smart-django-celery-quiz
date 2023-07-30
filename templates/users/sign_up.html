@@ -14,7 +14,6 @@
             </div>
         {% endif %}
         <form class="form_signup" action="" method="post">{% csrf_token %}
-
             {% for f in form %}
                 <label>{{ f.label }}*</label>
                 {{ f }}

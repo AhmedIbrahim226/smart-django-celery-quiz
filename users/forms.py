@@ -17,12 +17,12 @@ class SignUpForm(UserCreationForm):
 
 class QuizForm(forms.ModelForm):
     time = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'Duration in minutes'}))
-    required_score_to_pass = forms.IntegerField(label='Score to pass', widget=forms.NumberInput(attrs={'placeholder': 'Score in %'}))    
+    required_score_to_pass = forms.IntegerField(label='Score to pass', widget=forms.NumberInput(attrs={'placeholder': 'Score in %'}))
     start_quiz = forms.DateTimeField(
         help_text=mark_safe('The end of quiz will be (Start quiz + Time), that mean the quiz will remove from the student and the result will be in your Quiz report page.<br><br>In form: <b>YYYY-MM-DD hh:mm:ss</b>'),
         widget=forms.DateTimeInput(attrs={'placeholder': 'YYYY-MM-DD hh:mm:ss'})
         )
-    
+
     class Meta:
         model = Quiz
         fields = [
@@ -42,11 +42,11 @@ class QuizForm(forms.ModelForm):
             'number_of_chosen_questions': 'If not assign chosen questions you can assign (0) value.',
             'number_of_theory_questions': 'If not assign theory questions you can assign (0) value.',
         }
-        
+
         labels ={
             'name': 'Quiz name'
         }
-    
+
     def clean_name(self):
         cleaned_data = super().clean()
         name         = cleaned_data.get('name')
@@ -64,12 +64,12 @@ class QuestionForm(forms.ModelForm):
             'chose2', 'chose3', 'chose4', 'correct_chosen',
             'theory_answer'
         ]
-        
+
         help_texts = {
             'correct_chosen': 'Must be value of: (chose1 or chose2 or chose3 or chose4).',
             'theory_answer': 'The correct answer from you to compare with answer of students.'
         }
-        
+
         widgets = {
             'question': forms.TextInput(attrs={'placeholder': 'Descripe of question...'}),
             'chose1': forms.TextInput(attrs={'placeholder': 'Chose 1..... '}),
