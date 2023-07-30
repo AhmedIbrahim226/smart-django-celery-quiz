@@ -4,7 +4,7 @@
   celery used to create bg task to calculate theory question, websocket used to send the startdate countdown of quiz.**
 - **Login**, **Add quiz**, **Solve quiz**, **Add students**, **View reports**
 
-- **Theory questions calculated in lowest percentage of similatry meaning, we can increase the similatry. thats mean student must answer very close answer to correct answer of theory question.**
+- **Theory questions calculated in lowest percentage of similarty meaning, we can increase the similarty. thats mean student must answer very close answer to correct answer of theory question.**
 
 ----
 
